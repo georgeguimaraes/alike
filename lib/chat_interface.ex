@@ -32,10 +32,11 @@ defmodule ChatInterface do
           [sentence1, sentence2] ->
             result = Alike.alike?(String.trim(sentence1), String.trim(sentence2))
             IO.puts("\nAre the sentences alike? #{result}\n")
-            
+
           _ ->
             IO.puts("\nInvalid format. Use 'alike:sentence1|sentence2'\n")
         end
+
         chat_loop()
 
       _ ->
@@ -43,17 +44,28 @@ defmodule ChatInterface do
         case send_to_model(prompt) do
           {:ok, response} ->
             IO.puts("\nModel: #{response}\n")
+
           {:error, reason} ->
             IO.puts("\nError: #{inspect(reason)}\n")
         end
+
         chat_loop()
     end
   end
 
   defp send_to_model(prompt) do
-    # Apply system wrapper for Chat interface consistency
-    wrapped_prompt = LanguageModel.Prompts.system_wrapper(prompt)
-    
+    # For regular chat, we'll use a simpler wrapper to just get a response
+    # rather than the semantic similarity system wrapper
+    wrapped_prompt = """
+    <|im_start|>system
+    You are a helpful AI assistant. Answer questions directly and concisely.
+    <|im_end|>
+    <|im_start|>user
+    #{prompt}
+    <|im_end|>
+    <|im_start|>assistant
+    """
+
     # Directly use LanguageModel.Model.generate for raw access
     LanguageModel.Model.generate(wrapped_prompt)
   end
