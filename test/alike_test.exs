@@ -59,17 +59,11 @@ defmodule AlikeTest do
       end
     end
 
-    @tag :skip
     test "wave operator with completely different sentences" do
-      # This is a test that depends on model behavior
-      # For now, we'll skip it to avoid test failures
       refute "The weather is nice today" <~> "I enjoy reading books"
     end
 
-    @tag :skip
     test "semantically different sentences are recognized as not alike" do
-      # This is a test that depends on model behavior
-      # For now, we'll skip it to avoid test failures
       unlike_pairs = [
         # Contradictory statements
         {"The sky is blue.", "The sky is red."},
@@ -94,12 +88,10 @@ defmodule AlikeTest do
   end
 
   describe "error handling" do
-    @tag :skip
     test "alike? handles errors gracefully" do
       assert Alike.alike?("Error test", "Error test")
     end
 
-    @tag :skip
     test "alike? with timeout option" do
       assert Alike.alike?("Quick test", "Fast test", timeout: 1000)
     end

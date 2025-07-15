@@ -1,9 +1,9 @@
 defmodule LanguageModel.Model do
   @moduledoc """
-  Loads and manages the SmolLM2 model for text generation.
+  Loads and manages the Phi-4-mini-instruct model for text generation.
   """
 
-  @model "HuggingFaceTB/SmolLM2-1.7B-Instruct"
+  @model "microsoft/Phi-4-mini-instruct"
   @default_opts [
     max_new_tokens: 100,
     timeout: 1_000,
@@ -11,40 +11,38 @@ defmodule LanguageModel.Model do
   ]
 
   def serving do
+    # Get HuggingFace auth token for gated repositories
+    auth_token = System.get_env("HUGGINGFACE_HUB_TOKEN")
+    repo_spec = if auth_token, do: {:hf, @model, auth_token: auth_token}, else: {:hf, @model}
+    
     IO.puts("Loading model #{@model}...")
-
-    {:ok, model_info} = Bumblebee.load_model({:hf, @model})
+    {:ok, model_info} = Bumblebee.load_model(repo_spec)
     IO.puts("Model loaded successfully.")
 
     IO.puts("Loading tokenizer...")
-    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, @model})
+    {:ok, tokenizer} = Bumblebee.load_tokenizer(repo_spec)
     IO.puts("Tokenizer loaded successfully.")
 
     IO.puts("Loading generation config...")
-    {:ok, generation_config} = Bumblebee.load_generation_config({:hf, @model})
+    {:ok, generation_config} = Bumblebee.load_generation_config(repo_spec)
     IO.puts("Generation config loaded successfully.")
 
-    # Configure generation parameters specifically for SmolLM2 models
-    # Using parameters from the HuggingFace docs that are supported in Bumblebee 0.6.0
-    # HuggingFace example uses: max_new_tokens=50, temperature=0.2, top_p=0.9, do_sample=True
-    # But we can only use what Bumblebee supports
+    # Configure generation parameters for semantic similarity with Llama 2
+    # Llama 2 should follow instructions better, so use conservative settings
     generation_config =
       Bumblebee.configure(
         generation_config,
-        max_new_tokens: 100,
-        temperature: 0.2,  # Lower temperature for more focused responses
-        # Add sampling strategy to match HuggingFace example (similar to do_sample=True, top_p=0.9)
-        strategy: %{type: :multinomial_sampling, top_p: 0.9}
+        max_new_tokens: 5,    # Just need "true" or "false"
+        temperature: 0.1,     # Very low temperature for consistency
+        strategy: %{type: :greedy_search}  # Most deterministic
       )
 
     # Set compilation options - use precompilation for better performance
     compile = Keyword.get(@default_opts, :compile, false)
     compile_opts = if compile, do: [batch_size: 1, sequence_length: 100], else: false
 
-    # Set up text generation using parameters from SmolLM2 documentation
-    # The model documentation shows these parameters work for SmolLM2:
-    # temperature: 0.2, max_new_tokens: 50
-    # We've simplified the config to only use parameters Bumblebee 0.6.0 supports
+    # Set up text generation optimized for semantic similarity reasoning
+    # Using sampling and more tokens to allow for better semantic understanding
     Bumblebee.Text.generation(
       model_info,
       tokenizer,
