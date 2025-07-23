@@ -3,7 +3,7 @@ defmodule LanguageModel.Model do
   Loads and manages the Phi-4-mini-instruct model for text generation.
   """
 
-  @model "microsoft/Phi-4-mini-instruct"
+  @model "meta-llama/Llama-2-7b-chat-hf"
   @default_opts [
     max_new_tokens: 100,
     timeout: 1_000,
