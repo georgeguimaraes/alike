@@ -55,23 +55,28 @@ import Alike.WaveOperator
 ```elixir
 import Alike.WaveOperator
 
-sentence1 = Kino.Input.textarea("Sentence 1", default: "Hello, how are you?")
-sentence2 = Kino.Input.textarea("Sentence 2", default: "Hi there, how's it going?")
+form =
+  Kino.Control.form(
+    [
+      sentence1: Kino.Input.textarea("Sentence 1", default: "Hello, how are you?"),
+      sentence2: Kino.Input.textarea("Sentence 2", default: "Hi there, how's it going?")
+    ],
+    submit: "Check Similarity"
+  )
 
-Kino.Layout.grid([sentence1, sentence2], columns: 2)
-```
+Kino.listen(form, fn %{data: %{sentence1: s1, sentence2: s2}} ->
+  {:ok, score} = Alike.similarity(s1, s2)
+  {:ok, nli} = Alike.classify(s1, s2)
+  result = s1 <~> s2
 
-```elixir
-import Alike.WaveOperator
+  IO.puts("Sentence 1: #{s1}")
+  IO.puts("Sentence 2: #{s2}")
+  IO.puts("\nSimilarity score: #{Float.round(score, 3)}")
+  IO.puts("NLI classification: #{nli.label} (#{Float.round(nli.score, 3)})")
+  IO.puts("Are they alike? #{result}")
+end)
 
-s1 = Kino.Input.read(sentence1)
-s2 = Kino.Input.read(sentence2)
-
-result = s1 <~> s2
-
-IO.puts("Sentence 1: #{s1}")
-IO.puts("Sentence 2: #{s2}")
-IO.puts("\nAre they alike? #{result}")
+form
 ```
 
 ## 2. Similarity Scores
@@ -123,11 +128,11 @@ Kino.DataTable.new(results)
 
 NLI (Natural Language Inference) classifies the logical relationship between sentences:
 
-| Label | Meaning | Example |
-|-------|---------|---------|
-| `entailment` | Second follows from first | "A cat sleeps" → "An animal rests" |
-| `contradiction` | Cannot both be true | "Sky is blue" vs "Sky is red" |
-| `neutral` | No logical relationship | "I like coffee" vs "It's raining" |
+| Label           | Meaning                   | Example                              |
+| --------------- | ------------------------- | ------------------------------------ |
+| `entailment`    | Second follows from first | "A cat sleeps" → "An animal rests" |
+| `contradiction` | Cannot both be true       | "Sky is blue" vs "Sky is red"        |
+| `neutral`       | No logical relationship   | "I like coffee" vs "It's raining"    |
 
 ```elixir
 # Entailment - the second sentence follows from the first
@@ -150,22 +155,25 @@ IO.inspect(result)
 ### Explore NLI Classifications
 
 ```elixir
-premise = Kino.Input.textarea("Premise", default: "All birds can fly")
-hypothesis = Kino.Input.textarea("Hypothesis", default: "Penguins cannot fly")
+form =
+  Kino.Control.form(
+    [
+      premise: Kino.Input.textarea("Premise", default: "All birds can fly"),
+      hypothesis: Kino.Input.textarea("Hypothesis", default: "Penguins cannot fly")
+    ],
+    submit: "Classify"
+  )
 
-Kino.Layout.grid([premise, hypothesis], columns: 2)
-```
+Kino.listen(form, fn %{data: %{premise: p, hypothesis: h}} ->
+  {:ok, result} = Alike.classify(p, h)
 
-```elixir
-p = Kino.Input.read(premise)
-h = Kino.Input.read(hypothesis)
+  IO.puts("Premise: #{p}")
+  IO.puts("Hypothesis: #{h}")
+  IO.puts("\nClassification: #{result.label}")
+  IO.puts("Confidence: #{Float.round(result.score, 3)}")
+end)
 
-{:ok, result} = Alike.classify(p, h)
-
-IO.puts("Premise: #{p}")
-IO.puts("Hypothesis: #{h}")
-IO.puts("\nClassification: #{result.label}")
-IO.puts("Confidence: #{Float.round(result.score, 3)}")
+form
 ```
 
 ## 4. Testing LLM Outputs
@@ -275,8 +283,8 @@ Alike.alike?("Hello world", "Hi there", threshold: 0.3)
 ### Finding the Right Threshold
 
 ```elixir
-sentence1 = "The quick brown fox"
-sentence2 = "A fast fox"
+sentence1 = "I love drinking coffee in the morning"
+sentence2 = "Tea is a popular beverage"
 
 {:ok, score} = Alike.similarity(sentence1, sentence2)
 IO.puts("Similarity score: #{Float.round(score, 3)}")
@@ -285,7 +293,7 @@ thresholds = [0.3, 0.4, 0.45, 0.5, 0.6, 0.7]
 
 results =
   Enum.map(thresholds, fn threshold ->
-    result = Alike.alike?(sentence1, sentence2, threshold: threshold)
+    result = Alike.alike?(sentence1, sentence2, threshold: threshold, check_contradiction: false)
     %{threshold: threshold, alike?: result}
   end)
 
@@ -313,31 +321,6 @@ If you only need similarity (not contradiction detection), disable NLI for faste
 
 IO.puts("Without NLI: #{div(time_fast, 1000)}ms")
 IO.puts("With NLI: #{div(time_full, 1000)}ms")
-```
-
-### Batch Similar Tests
-
-Models stay loaded between calls, so batch your similarity tests together:
-
-```elixir
-sentences = [
-  {"The cat sleeps", "A feline naps"},
-  {"Dogs bark loudly", "Canines make noise"},
-  {"Birds fly high", "Avians soar above"},
-  {"Fish swim deep", "Aquatic creatures dive"},
-  {"Horses run fast", "Equines gallop quickly"}
-]
-
-{time, results} =
-  :timer.tc(fn ->
-    Enum.map(sentences, fn {s1, s2} ->
-      {:ok, score} = Alike.similarity(s1, s2)
-      score
-    end)
-  end)
-
-IO.puts("Processed #{length(sentences)} pairs in #{div(time, 1000)}ms")
-IO.puts("Average: #{div(time, length(sentences) * 1000)}ms per pair")
 ```
 
 ## 8. Real-World Example: Chatbot Testing
@@ -416,20 +399,20 @@ IO.puts("Response is consistent with facts: #{consistent}")
 
 ## Summary
 
-| Function | Use Case | Returns |
-|----------|----------|---------|
-| `<~>` (wave operator) | Quick similarity check in tests | `true` / `false` |
-| `Alike.alike?/3` | Similarity check with options | `true` / `false` |
-| `Alike.similarity/2` | Get raw similarity score | `{:ok, 0.0..1.0}` |
-| `Alike.classify/2` | NLI classification | `{:ok, %{label: _, score: _}}` |
+| Function              | Use Case                        | Returns                        |
+| --------------------- | ------------------------------- | ------------------------------ |
+| `<~>` (wave operator) | Quick similarity check in tests | `true` / `false`               |
+| `Alike.alike?/3`      | Similarity check with options   | `true` / `false`               |
+| `Alike.similarity/2`  | Get raw similarity score        | `{:ok, 0.0..1.0}`              |
+| `Alike.classify/2`    | NLI classification              | `{:ok, %{label: _, score: _}}` |
 
 **Options for `alike?/3`:**
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `:threshold` | `0.45` | Minimum similarity score |
-| `:check_contradiction` | `true` | Use NLI to detect contradictions |
-| `:timeout` | `30_000` | Timeout in milliseconds |
+| Option                 | Default  | Description                      |
+| ---------------------- | -------- | -------------------------------- |
+| `:threshold`           | `0.45`   | Minimum similarity score         |
+| `:check_contradiction` | `true`   | Use NLI to detect contradictions |
+| `:timeout`             | `30_000` | Timeout in milliseconds          |
 
 **Tips:**
 
