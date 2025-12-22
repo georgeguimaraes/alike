@@ -4,9 +4,8 @@ defmodule Alike.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      LanguageModel.Model.child_spec()
-    ]
+    # Models are loaded lazily on first use
+    children = []
 
     opts = [strategy: :one_for_one, name: Alike.Supervisor]
     Supervisor.start_link(children, opts)

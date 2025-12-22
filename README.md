@@ -1,187 +1,207 @@
-# Alike
+# Alike 〰️
 
-**Semantic Similarity Testing for Elixir with Language Models**
+Semantic similarity testing for Elixir.
 
-Alike is an Elixir library that lets you test if two sentences have the same meaning. Instead of using embeddings and cosine similarity, we leverage a local language model to determine semantic similarity by prompting it directly.
+Alike lets you test if two sentences convey the same meaning using the expressive **wave operator** `<~>`. Perfect for testing LLM outputs, chatbots, NLP pipelines, or any application that generates natural language.
 
-## Key Features
+```elixir
+assert "The cat is sleeping" <~> "A feline is taking a nap"
+```
 
-- **Direct LLM Comparison**  
-  Prompts a language model to compare two sentences and determine if they are semantically similar.
+## Features
 
-- **Wave Operator (`<~>`)**  
-  Write expressive tests with `assert sentence1 <~> sentence2`.
-
-- **Simple Integration with ExUnit**  
-  Works seamlessly with your existing test suites.
+- **Wave operator (`<~>`)** - Beautiful, expressive test assertions
+- **Semantic understanding** - Detects meaning, not just string matches
+- **Contradiction detection** - Catches logical contradictions like "The sky is blue" vs "The sky is red"
+- **Local models** - Runs entirely on your machine, no API keys needed
+- **Configurable** - Tune thresholds for your use case
 
 ## Installation
 
+Add `alike` to your test dependencies in `mix.exs`:
+
 ```elixir
 def deps do
-  [
-    {:alike, "~> 0.1.0"}
-  ]
-end
-```
-
-## Usage
-
-Add Alike to your test dependencies in `mix.exs`:
-
-```elixir
-defp deps do
   [
     {:alike, "~> 0.1.0", only: :test}
   ]
 end
 ```
 
-Then use it in your tests:
+Then run:
+
+```bash
+mix deps.get
+```
+
+> **Note:** On first use, Alike downloads the required models (~460MB total). This only happens once and models are cached in `~/.cache/bumblebee/`.
+
+## Quick Start
 
 ```elixir
-defmodule YourTest do
-  use ExUnit.Case, async: true
-  import WaveOperator
+defmodule MyAppTest do
+  use ExUnit.Case
+  import Alike.WaveOperator
 
-  test "semantically similar sentences" do
-    # These sentences mean the same thing
-    assert "The cat is sleeping" <~> "A feline is taking a nap"
-    
-    # These sentences have different meanings
-    refute "The dog is barking" <~> "The cat is sleeping"
+  test "chatbot responds appropriately" do
+    response = MyChatbot.greet("Hello!")
+
+    assert response <~> "Hi there! How can I help you today?"
+  end
+
+  test "summary captures key points" do
+    summary = MySummarizer.summarize(long_article)
+
+    assert summary <~> "The article discusses climate change impacts on agriculture"
   end
 end
 ```
 
-## How It Works
+## Usage
 
-1. **Tests use `<~>`**  
-   The wave operator calls `Alike.alike?/3`, which prompts the language model.
-   
-2. **Language Model Responds**  
-   The LLM returns a JSON object with its assessment:
-   ```json
-   {alike: true, explanation: "Both sentences describe a sleeping cat."}
-   ```
-   
-3. **Boolean Result**  
-   The assertion succeeds or fails based on the `alike` value.
+### The Wave Operator
 
-## Model Details
+The `<~>` operator is the recommended way to test semantic similarity:
 
-Alike uses [SmolLM2-360M-Instruct](https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct), a small but efficient language model that:
+```elixir
+import Alike.WaveOperator
 
-- Is fast enough to run in CI environments
-- Runs locally without needing external API calls
-- Can accurately determine semantic similarity
-- Uses approximately 1.5GB of memory
+# Similar sentences pass
+assert "The quick brown fox jumps over the lazy dog"
+       <~> "A fast auburn fox leaps over a sleeping canine"
+
+# Different meanings fail
+refute "The weather is nice today" <~> "I enjoy reading books"
+
+# Contradictions are detected
+refute "The sky is blue" <~> "The sky is red"
+```
+
+### Direct Function Calls
+
+For more control, use `Alike.alike?/3` directly:
+
+```elixir
+# Basic usage
+Alike.alike?("The cat is sleeping", "A feline is taking a nap")
+# => true
+
+# Custom similarity threshold
+Alike.alike?("Hello world", "Hi there", threshold: 0.6)
+# => true or false depending on threshold
+
+# Disable contradiction checking for speed
+Alike.alike?("Some text", "Other text", check_contradiction: false)
+```
+
+### Raw Similarity Scores
+
+Get the underlying similarity score (0.0 to 1.0):
+
+```elixir
+{:ok, score} = Alike.similarity("Hello world", "Hi there")
+# => {:ok, 0.623}
+```
+
+### NLI Classification
+
+Classify the relationship between sentences:
+
+```elixir
+{:ok, result} = Alike.classify("The sky is blue", "The sky is red")
+# => {:ok, %{label: "contradiction", score: 0.998}}
+
+{:ok, result} = Alike.classify("The cat is sleeping", "An animal is resting")
+# => {:ok, %{label: "entailment", score: 0.892}}
+```
+
+**NLI Labels:**
+- `"entailment"` - The second sentence logically follows from the first (e.g., "A cat is sleeping" entails "An animal is resting")
+- `"contradiction"` - The sentences cannot both be true (e.g., "The sky is blue" contradicts "The sky is red")
+- `"neutral"` - The sentences are related but neither entails nor contradicts the other
 
 ## Configuration
 
-You can configure the model behavior:
+Customize thresholds in your `config/config.exs`:
 
 ```elixir
-# In your config.exs
 config :alike,
-  timeout: 10_000,         # timeout for model inference
-  fallback_mode: true      # use fallback when model fails
+  # Minimum similarity score to consider sentences "alike" (0.0 to 1.0)
+  similarity_threshold: 0.45,
+
+  # Minimum confidence to flag a contradiction (0.0 to 1.0)
+  contradiction_threshold: 0.8
 ```
 
-## Usage in Tests
+## How It Works
 
-When you include Alike in your project as a test dependency:
+Alike uses two models that run locally on your machine:
+
+1. **Sentence Embeddings** ([all-MiniLM-L12-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)) - Converts sentences into 384-dimensional vectors and computes cosine similarity
+
+2. **NLI Model** ([nli-distilroberta-base](https://huggingface.co/cross-encoder/nli-distilroberta-base)) - Detects contradictions that embeddings alone might miss
+
+The combination catches both semantic similarity AND logical contradictions.
+
+## Examples
+
+### Testing LLM Outputs
 
 ```elixir
-{:alike, "~> 0.1.0", only: :test}
+test "LLM generates appropriate response" do
+  prompt = "Explain photosynthesis in simple terms"
+  response = MyLLM.generate(prompt)
+
+  assert response <~> "Plants convert sunlight into energy through a process called photosynthesis"
+end
 ```
 
-Alike will automatically start a single instance of the language model when your tests run, making it available for all test cases that use the library. This ensures:
+### Testing Translations
 
-1. The model is ready when your tests need it
-2. Only one instance is started, regardless of how many tests use it
-3. Resources are efficiently managed
+```elixir
+test "translation preserves meaning" do
+  original = "The weather is beautiful today"
+  translated = MyTranslator.translate(original, to: :spanish) |> MyTranslator.translate(to: :english)
 
-The model automatically starts in test environments without any additional configuration required.
-
-For faster test runs during development, you can skip loading the model:
-
-```bash
-# Skip loading the model for faster test runs
-mix test --no-start
-
-# Run with the actual model for full integration tests
-mix test
+  assert original <~> translated
+end
 ```
 
-## How to Speed Up CI Tests
+### Testing Summarization
 
-Downloading the model files (~724MB) each time CI runs can significantly slow down your test process. To speed up CI tests, you can cache the Bumblebee model files between runs.
+```elixir
+test "summary captures main idea" do
+  article = "Long article about renewable energy..."
+  summary = MySummarizer.summarize(article)
 
-### Caching with GitHub Actions
+  assert summary <~> "The article discusses the benefits and challenges of renewable energy adoption"
+end
+```
 
-Here's an example of how to set up caching for Bumblebee models in GitHub Actions:
+## Speeding Up CI
+
+Cache the Bumblebee models directory to avoid re-downloading on every CI run:
 
 ```yaml
-name: Elixir CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Elixir
-      uses: erlef/setup-beam@v1
-      with:
-        elixir-version: '1.18.0'
-        otp-version: '26.0'
-    
-    - name: Cache Bumblebee models
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/bumblebee
-        key: ${{ runner.os }}-bumblebee-smollm2-360m-${{ hashFiles('lib/language_model/model.ex') }}
-        restore-keys: |
-          ${{ runner.os }}-bumblebee-smollm2-360m-
-    
-    - name: Install dependencies
-      run: mix deps.get
-    
-    - name: Run tests
-      run: mix test
+# GitHub Actions example
+- name: Cache Bumblebee models
+  uses: actions/cache@v3
+  with:
+    path: ~/.cache/bumblebee
+    key: ${{ runner.os }}-bumblebee-${{ hashFiles('mix.lock') }}
 ```
-
-The key part is caching the `~/.cache/bumblebee` directory, which is where Bumblebee stores downloaded model files by default. The cache key includes a hash of your model.ex file, so if you change the model, it will download a fresh copy.
-
-### Environment Variables
-
-You can also configure the cache directory location using environment variables:
-
-```bash
-# Set a custom cache directory
-export BUMBLEBEE_CACHE_DIR=/path/to/cache
-```
-
-This is useful for CI environments where you want to specify a particular cache location.
 
 ## Requirements
 
-- Elixir ~> 1.18
-- EXLA for GPU acceleration (optional but recommended)
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- Elixir 1.18+
+- ~460MB disk space for models (downloaded on first use)
+- Models are cached in `~/.cache/bumblebee/`
 
 ## License
 
-This project is licensed under the MIT License - see LICENSE for details.
+Apache License 2.0 - see [LICENSE](LICENSE) for details.
+
+## Author
+
+George Guimarães
 
