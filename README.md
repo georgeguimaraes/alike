@@ -38,6 +38,16 @@ mix deps.get
 
 > **Note:** On first use, Alike downloads the required models (~460MB total). This only happens once and models are cached in `~/.cache/bumblebee/`.
 
+### Setup test_helper.exs
+
+For faster inference, configure Nx to use the EXLA backend in your `test/test_helper.exs`:
+
+```elixir
+Nx.global_default_backend(EXLA.Backend)
+
+ExUnit.start()
+```
+
 ## Quick Start
 
 ```elixir

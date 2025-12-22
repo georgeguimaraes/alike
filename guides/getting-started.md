@@ -16,6 +16,16 @@ end
 
 Run `mix deps.get` to fetch the dependency.
 
+## Setup test_helper.exs
+
+For faster inference, configure Nx to use the EXLA backend in your `test/test_helper.exs`:
+
+```elixir
+Nx.global_default_backend(EXLA.Backend)
+
+ExUnit.start()
+```
+
 ## Your First Test
 
 Create a test file and import the wave operator:
