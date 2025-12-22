@@ -1,5 +1,7 @@
 # Alike 〰️
 
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fgeorgeguimaraes%2Falike%2Fblob%2Fmain%2Flivebook%2Falike_tutorial.livemd)
+
 Semantic similarity testing for Elixir.
 
 Alike lets you test if two sentences convey the same meaning using the expressive **wave operator** `<~>`. Perfect for testing LLM outputs, chatbots, NLP pipelines, or any application that generates natural language.
@@ -135,13 +137,17 @@ config :alike,
 
 ## How It Works
 
-Alike uses two models that run locally on your machine:
+Alike uses two models that run locally on your machine, powered by [Bumblebee](https://github.com/elixir-nx/bumblebee) and [Nx](https://github.com/elixir-nx/nx):
 
 1. **Sentence Embeddings** ([all-MiniLM-L12-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)) - Converts sentences into 384-dimensional vectors and computes cosine similarity
 
 2. **NLI Model** ([nli-distilroberta-base](https://huggingface.co/cross-encoder/nli-distilroberta-base)) - Detects contradictions that embeddings alone might miss
 
 The combination catches both semantic similarity AND logical contradictions.
+
+## Interactive Tutorial
+
+Click the "Run in Livebook" badge above to try the interactive tutorial, or check the [`livebook`](livebook/) directory.
 
 ## Examples
 
