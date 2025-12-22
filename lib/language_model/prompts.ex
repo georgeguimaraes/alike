@@ -20,23 +20,23 @@ defmodule LanguageModel.Prompts do
     """
     <s>[INST] <<SYS>>
     You are a semantic similarity classifier. Answer with only "true" or "false".
-    
+
     Examples:
     Q: Are "The dog is running fast" and "The canine is jogging quickly" semantically similar?
     A: true
-    
+
     Q: Are "The car is red" and "The sky is blue" semantically similar?
     A: false
-    
+
     Q: Are "It's raining outside" and "Water is falling from the clouds" semantically similar?
     A: true
-    
+
     Q: Are "I love pizza" and "Mathematics is difficult" semantically similar?
     A: false
-    
+
     Q: Are "The book is interesting" and "The novel is fascinating" semantically similar?
     A: true
-    
+
     Q: Are "The weather is nice today" and "I enjoy reading books" semantically similar?
     A: false
     <</SYS>>

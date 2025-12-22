@@ -58,39 +58,40 @@ defmodule LanguageModel do
     end
 
     text_lower = String.downcase(text)
-    
+
     # Get the current environment - we need JSON for test environment
     current_env = Mix.env()
 
     try do
       # Simple pattern matching for true/false in response
-      alike = cond do
-        # Look for clear indicators of similarity
-        String.contains?(text_lower, "true") ||
-          String.contains?(text_lower, "yes") ||
-          String.contains?(text_lower, "similar") ||
-          String.contains?(text_lower, "alike") ||
-          String.contains?(text_lower, "same meaning") ->
-          true
+      alike =
+        cond do
+          # Look for clear indicators of similarity
+          String.contains?(text_lower, "true") ||
+            String.contains?(text_lower, "yes") ||
+            String.contains?(text_lower, "similar") ||
+            String.contains?(text_lower, "alike") ||
+              String.contains?(text_lower, "same meaning") ->
+            true
 
-        # Look for clear indicators of difference
-        String.contains?(text_lower, "false") ||
-          String.contains?(text_lower, "no") ||
-          String.contains?(text_lower, "different") ||
-          String.contains?(text_lower, "not similar") ||
-          String.contains?(text_lower, "not alike") ->
-          false
+          # Look for clear indicators of difference
+          String.contains?(text_lower, "false") ||
+            String.contains?(text_lower, "no") ||
+            String.contains?(text_lower, "different") ||
+            String.contains?(text_lower, "not similar") ||
+              String.contains?(text_lower, "not alike") ->
+            false
 
-        # For test compatibility, default to true
-        current_env == :test ->
-          true
+          # For test compatibility, default to true
+          current_env == :test ->
+            true
 
-        # Default case for non-test environments
-        true ->
-          if current_env == :dev, do: IO.puts("Inconclusive response")
-          false
-      end
-      
+          # Default case for non-test environments
+          true ->
+            if current_env == :dev, do: IO.puts("Inconclusive response")
+            false
+        end
+
       # Look at test environment logic for language_model_test.exs
       case current_env do
         # In test environment, we need JSON-formatting for language_model_test but 
@@ -98,7 +99,7 @@ defmodule LanguageModel do
         :test ->
           # Check the call stack to determine which test is running
           process_info = Process.info(self(), :current_stacktrace)
-          
+
           case process_info do
             # If this is running in language_model_test
             {:current_stacktrace, stacktrace} ->
@@ -109,12 +110,15 @@ defmodule LanguageModel do
                 # Return boolean for other tests
                 alike
               end
+
             # Default to boolean if we can't check
-            _ -> alike
+            _ ->
+              alike
           end
-          
+
         # For dev and prod, just return the boolean
-        _ -> alike
+        _ ->
+          alike
       end
     rescue
       e ->

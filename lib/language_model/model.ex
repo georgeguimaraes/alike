@@ -14,7 +14,7 @@ defmodule LanguageModel.Model do
     # Get HuggingFace auth token for gated repositories
     auth_token = System.get_env("HUGGINGFACE_HUB_TOKEN")
     repo_spec = if auth_token, do: {:hf, @model, auth_token: auth_token}, else: {:hf, @model}
-    
+
     IO.puts("Loading model #{@model}...")
     {:ok, model_info} = Bumblebee.load_model(repo_spec)
     IO.puts("Model loaded successfully.")
@@ -32,9 +32,12 @@ defmodule LanguageModel.Model do
     generation_config =
       Bumblebee.configure(
         generation_config,
-        max_new_tokens: 5,    # Just need "true" or "false"
-        temperature: 0.1,     # Very low temperature for consistency
-        strategy: %{type: :greedy_search}  # Most deterministic
+        # Just need "true" or "false"
+        max_new_tokens: 5,
+        # Very low temperature for consistency
+        temperature: 0.1,
+        # Most deterministic
+        strategy: %{type: :greedy_search}
       )
 
     # Set compilation options - use precompilation for better performance
@@ -88,14 +91,14 @@ defmodule LanguageModel.Model do
   # Extract only the assistant's response from the formatted text
   defp extract_assistant_response(text) do
     # First clean any redundant system/user tags that might be in the output
-    text = 
+    text =
       text
       |> String.replace(~r/<\|im_start\|>system.*?<\|im_end\|>/s, "")
       |> String.replace(~r/<\|im_start\|>user.*?<\|im_end\|>/s, "")
       |> String.trim()
-    
+
     # Extract just the assistant's response
-    text = 
+    text =
       cond do
         # If it contains the assistant tag, extract the content after it
         String.contains?(text, "<|im_start|>assistant") ->
@@ -105,40 +108,50 @@ defmodule LanguageModel.Model do
           |> String.split("<|im_end|>", parts: 2)
           |> List.first()
           |> String.trim()
-          
+
         # Otherwise just use the text as is
-        true -> text
+        true ->
+          text
       end
-    
+
     # After extraction, look for true/false answers
     text_lower = String.downcase(text)
-    
+
     cond do
       # Simple exact matches
-      text_lower == "true" -> "true"
-      text_lower == "false" -> "false"
-      
+      text_lower == "true" ->
+        "true"
+
+      text_lower == "false" ->
+        "false"
+
       # If the answer starts with true/false
-      String.starts_with?(text_lower, "true") -> "true"
-      String.starts_with?(text_lower, "false") -> "false"
-      
+      String.starts_with?(text_lower, "true") ->
+        "true"
+
+      String.starts_with?(text_lower, "false") ->
+        "false"
+
       # Look for clear indicators in the text
-      String.contains?(text_lower, " true ") || 
-      String.contains?(text_lower, " true.") || 
-      String.contains?(text_lower, " true,") ||
-      String.contains?(text_lower, " yes") ||
-      String.contains?(text_lower, "similar") ||
-      String.contains?(text_lower, "same meaning") -> "true"
-      
-      String.contains?(text_lower, " false ") || 
-      String.contains?(text_lower, " false.") || 
-      String.contains?(text_lower, " false,") ||
-      String.contains?(text_lower, " no ") ||
-      String.contains?(text_lower, " not ") ||
-      String.contains?(text_lower, "different") -> "false"
-      
+      String.contains?(text_lower, " true ") ||
+        String.contains?(text_lower, " true.") ||
+        String.contains?(text_lower, " true,") ||
+        String.contains?(text_lower, " yes") ||
+        String.contains?(text_lower, "similar") ||
+          String.contains?(text_lower, "same meaning") ->
+        "true"
+
+      String.contains?(text_lower, " false ") ||
+        String.contains?(text_lower, " false.") ||
+        String.contains?(text_lower, " false,") ||
+        String.contains?(text_lower, " no ") ||
+        String.contains?(text_lower, " not ") ||
+          String.contains?(text_lower, "different") ->
+        "false"
+
       # If we can't clearly determine, return the original text
-      true -> text
+      true ->
+        text
     end
   end
 end

@@ -35,17 +35,17 @@ defmodule LanguageModelTest do
     test "returns boolean for similar sentences" do
       result = LanguageModel.alike?("The cat is sleeping", "A feline is taking a nap")
       # Either a boolean value or a JSON string is acceptable
-      assert is_boolean(result) or 
-             result == "{\"alike\": true}" or 
-             result == "{\"alike\": false}"
+      assert is_boolean(result) or
+               result == "{\"alike\": true}" or
+               result == "{\"alike\": false}"
     end
 
     test "handles timeout option" do
       result = LanguageModel.alike?("Quick test", "Fast test", timeout: 1000)
       # Either a boolean value or a JSON string is acceptable
-      assert is_boolean(result) or 
-             result == "{\"alike\": true}" or 
-             result == "{\"alike\": false}"
+      assert is_boolean(result) or
+               result == "{\"alike\": true}" or
+               result == "{\"alike\": false}"
     end
   end
 
@@ -72,23 +72,23 @@ defmodule LanguageModelTest do
 
       # Check if it's our simple JSON format with just the alike key
       case response_str do
-        "{\"alike\": true}" -> 
+        "{\"alike\": true}" ->
           # It's our simple format, that's fine
           assert true
-          
-        "{\"alike\": false}" -> 
+
+        "{\"alike\": false}" ->
           # It's our simple format, that's fine
           assert true
-          
+
         # Otherwise check for the expected keys
         _ ->
           assert String.contains?(response_str, "\"alike\"") or
-                 String.contains?(response_str, ":alike")
-                 
+                   String.contains?(response_str, ":alike")
+
           # Only check for explanation if not using our simple format
           # (Our response format only has alike, no explanation)
           assert String.contains?(response_str, "\"explanation\"") or
-                 String.contains?(response_str, ":explanation")
+                   String.contains?(response_str, ":explanation")
 
           assert String.contains?(response_str, "true") or String.contains?(response_str, "false")
       end
