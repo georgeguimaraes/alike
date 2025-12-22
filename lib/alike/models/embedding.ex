@@ -6,6 +6,8 @@ defmodule Alike.Models.Embedding do
   to convert sentences into 384-dimensional vectors for cosine similarity comparison.
   """
 
+  alias Bumblebee.Text.TextEmbedding
+
   @model "sentence-transformers/all-MiniLM-L12-v2"
 
   @doc """
@@ -20,7 +22,7 @@ defmodule Alike.Models.Embedding do
     {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, @model})
     IO.puts("Tokenizer loaded successfully.")
 
-    Bumblebee.Text.TextEmbedding.text_embedding(
+    TextEmbedding.text_embedding(
       model_info,
       tokenizer,
       compile: [batch_size: 2, sequence_length: 128],
