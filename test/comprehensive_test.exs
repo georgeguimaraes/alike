@@ -7,7 +7,7 @@ defmodule ComprehensiveTest do
   Code.require_file("support/test_sentences.ex", __DIR__)
 
   describe "similar pairs (should be alike):" do
-    for {s1, s2} <- Alike.TestSentences.similar_pairs() |> Enum.take(50) do
+    for {s1, s2} <- Alike.TestSentences.similar_pairs() do
       @s1 s1
       @s2 s2
       test "#{s1} <~> #{s2}" do
@@ -17,7 +17,7 @@ defmodule ComprehensiveTest do
   end
 
   describe "contradiction pairs (should NOT be alike):" do
-    for {s1, s2} <- Alike.TestSentences.contradiction_pairs() |> Enum.take(50) do
+    for {s1, s2} <- Alike.TestSentences.contradiction_pairs() do
       @s1 s1
       @s2 s2
       test "#{s1} <!> #{s2}" do
@@ -27,7 +27,7 @@ defmodule ComprehensiveTest do
   end
 
   describe "unrelated pairs (should NOT be alike):" do
-    for {s1, s2} <- Alike.TestSentences.unrelated_pairs() |> Enum.take(30) do
+    for {s1, s2} <- Alike.TestSentences.unrelated_pairs() do
       @s1 s1
       @s2 s2
       test "#{s1} <!> #{s2}" do
