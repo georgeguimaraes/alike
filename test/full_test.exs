@@ -1,4 +1,4 @@
-defmodule ComprehensiveTest do
+defmodule FullTest do
   use ExUnit.Case, async: false
 
   @moduletag timeout: 600_000
