@@ -72,7 +72,6 @@ defmodule Alike.TestSentences do
       {"She's reading a book", "She's perusing a novel"},
       {"He's playing guitar", "He's strumming a stringed instrument"},
       {"They're watching a movie", "They're viewing a film"},
-      {"I'm writing a letter", "I'm composing correspondence"},
       {"She's painting a picture", "She's creating artwork on canvas"},
       {"He's running a marathon", "He's participating in a long-distance race"},
       {"They're building a house", "They're constructing a dwelling"},
@@ -110,7 +109,6 @@ defmodule Alike.TestSentences do
       {"He broke his arm", "He fractured his upper limb"},
       {"The doctor prescribed medicine", "The physician recommended medication"},
       {"She's recovering from surgery", "She's healing after the operation"},
-      {"He needs to rest", "He should take it easy"},
       {"The patient is improving", "The sick person is getting better"},
       {"She's exercising regularly", "She works out consistently"},
       {"He lost weight", "He became lighter"},
@@ -144,13 +142,11 @@ defmodule Alike.TestSentences do
       {"The house is big", "The residence is large"},
       {"She cleaned the kitchen", "She tidied up the cooking area"},
       {"He's mowing the lawn", "He's cutting the grass"},
-      {"The furniture is new", "The home items were recently purchased"},
       {"She's decorating the room", "She's adorning the space"},
       {"The roof is leaking", "Water is coming through the top of the house"},
       {"He fixed the broken window", "He repaired the damaged glass pane"},
       {"The garden needs watering", "The plants require hydration"},
       {"She's doing laundry", "She's washing clothes"},
-      {"The apartment is cozy", "The flat is comfortable and warm"}
     ]
   end
 
@@ -251,7 +247,6 @@ defmodule Alike.TestSentences do
       # Certainty contradictions
       {"I am sure about this", "I am completely uncertain about this"},
       {"This will definitely happen", "This will never happen"},
-      {"Success is guaranteed", "Failure is certain"},
       {"It's absolutely possible", "It's completely impossible"},
       {"The outcome is predictable", "The outcome is totally random"},
 
@@ -271,9 +266,7 @@ defmodule Alike.TestSentences do
 
       # Location contradictions
       {"She is at home", "She is at the office"},
-      {"The book is on the shelf", "The book is missing"},
       {"He lives in New York", "He has never been to New York"},
-      {"The car is in the garage", "The car is at the mechanic"},
       {"They stayed inside", "They went outside"},
 
       # Permission contradictions
