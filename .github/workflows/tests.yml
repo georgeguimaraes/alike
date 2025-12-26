@@ -13,11 +13,18 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}} / ${{matrix.model_name}}
     strategy:
       matrix:
         elixir: ["1.18"]
         otp: ["27"]
+        include:
+          - model_name: "L6 (default)"
+            model: "sentence-transformers/all-MiniLM-L6-v2"
+            exclude_tags: "l12_only"
+          - model_name: "L12 (quality)"
+            model: "sentence-transformers/all-MiniLM-L12-v2"
+            exclude_tags: ""
 
     steps:
       - uses: actions/checkout@v4
@@ -36,8 +43,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/bumblebee
-          key: ${{ runner.os }}-bumblebee-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-bumblebee-${{ matrix.model }}-${{ hashFiles('**/mix.lock') }}
       - name: Install dependencies
         run: mix deps.get
       - name: Run tests
-        run: mix test
+        run: mix test ${{ matrix.exclude_tags != '' && format('--exclude {0}', matrix.exclude_tags) || '' }}
+        env:
+          ALIKE_EMBEDDING_MODEL: ${{ matrix.model }}

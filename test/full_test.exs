@@ -16,6 +16,18 @@ defmodule FullTest do
     end
   end
 
+  describe "similar pairs requiring L12 model:" do
+    @describetag :l12_only
+
+    for {s1, s2} <- Alike.TestSentences.l12_only_similar_pairs() do
+      @s1 s1
+      @s2 s2
+      test "#{s1} <~> #{s2}" do
+        assert Alike.alike?(@s1, @s2)
+      end
+    end
+  end
+
   describe "contradiction pairs (should NOT be alike):" do
     for {s1, s2} <- Alike.TestSentences.contradiction_pairs() do
       @s1 s1

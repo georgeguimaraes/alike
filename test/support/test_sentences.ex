@@ -29,7 +29,6 @@ defmodule Alike.TestSentences do
       {"It's a cloudy day", "The sky is overcast today"},
       {"Thunder rumbled in the distance", "A thunderous sound echoed far away"},
       {"The temperature is very high", "It's extremely hot"},
-      {"Frost covered the ground", "Ice crystals formed on the surface"},
       {"The fog is thick this morning", "Dense mist blankets the area at dawn"},
       {"A rainbow appeared after the storm", "Colorful arc formed following the rainfall"},
 
@@ -143,10 +142,20 @@ defmodule Alike.TestSentences do
       {"She cleaned the kitchen", "She tidied up the cooking area"},
       {"He's mowing the lawn", "He's cutting the grass"},
       {"She's decorating the room", "She's adorning the space"},
-      {"The roof is leaking", "Water is coming through the top of the house"},
       {"He fixed the broken window", "He repaired the damaged glass pane"},
       {"The garden needs watering", "The plants require hydration"},
-      {"She's doing laundry", "She's washing clothes"},
+      {"She's doing laundry", "She's washing clothes"}
+    ]
+  end
+
+  @doc """
+  Similar pairs that require L12 model for accurate detection.
+  These pairs involve deeper semantic inference.
+  """
+  def l12_only_similar_pairs do
+    [
+      {"Frost covered the ground", "Ice crystals formed on the surface"},
+      {"The roof is leaking", "Water is coming through the top of the house"}
     ]
   end
 

@@ -2,24 +2,41 @@ defmodule Alike.Models.Embedding do
   @moduledoc """
   Sentence embedding model for semantic similarity.
 
-  Uses [all-MiniLM-L12-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)
+  Uses [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) by default
   to convert sentences into 384-dimensional vectors for cosine similarity comparison.
+
+  Configure via application config or environment variable:
+
+      config :alike, embedding_model: "sentence-transformers/all-MiniLM-L12-v2"
+
+  Or: `ALIKE_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L12-v2`
   """
 
   alias Bumblebee.Text.TextEmbedding
 
-  @model "sentence-transformers/all-MiniLM-L12-v2"
+  @default_model "sentence-transformers/all-MiniLM-L6-v2"
+
+  @doc """
+  Returns the configured embedding model name.
+
+  Priority: ALIKE_EMBEDDING_MODEL env var > :alike :embedding_model config > default
+  """
+  def model_name do
+    System.get_env("ALIKE_EMBEDDING_MODEL") ||
+      Application.get_env(:alike, :embedding_model, @default_model)
+  end
 
   @doc """
   Returns the Nx.Serving for the embedding model.
   """
   def serving do
-    IO.puts("Loading embedding model #{@model}...")
-    {:ok, model_info} = Bumblebee.load_model({:hf, @model})
+    model = model_name()
+    IO.puts("Loading embedding model #{model}...")
+    {:ok, model_info} = Bumblebee.load_model({:hf, model})
     IO.puts("Model loaded successfully.")
 
     IO.puts("Loading tokenizer...")
-    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, @model})
+    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, model})
     IO.puts("Tokenizer loaded successfully.")
 
     TextEmbedding.text_embedding(

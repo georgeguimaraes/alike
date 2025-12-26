@@ -150,11 +150,33 @@ config :alike,
   contradiction_threshold: 0.8
 ```
 
+### Model Configuration
+
+Alike defaults to `all-MiniLM-L6-v2` for a good balance of speed and quality. For maximum accuracy, use L12:
+
+```elixir
+config :alike,
+  embedding_model: "sentence-transformers/all-MiniLM-L12-v2"
+```
+
+| Model | Size | Speed | Quality |
+|-------|------|-------|---------|
+| `all-MiniLM-L6-v2` (default) | ~90MB | Fast | Good |
+| `all-MiniLM-L12-v2` | ~120MB | Slower | Best |
+
+You can also set the model via environment variable (useful for CI):
+
+```bash
+ALIKE_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L12-v2 mix test
+```
+
+Any [sentence-transformers](https://huggingface.co/sentence-transformers) model compatible with Bumblebee should work.
+
 ## How It Works
 
 Alike uses two models that run locally on your machine, powered by [Bumblebee](https://github.com/elixir-nx/bumblebee) and [Nx](https://github.com/elixir-nx/nx):
 
-1. **Sentence Embeddings** ([all-MiniLM-L12-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)) - Converts sentences into 384-dimensional vectors and computes cosine similarity
+1. **Sentence Embeddings** ([all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) by default) - Converts sentences into 384-dimensional vectors and computes cosine similarity
 
 2. **NLI Model** ([nli-distilroberta-base](https://huggingface.co/cross-encoder/nli-distilroberta-base)) - Detects contradictions that embeddings alone might miss
 
