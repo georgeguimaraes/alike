@@ -62,6 +62,11 @@ defmodule MyAppTest do
   end
 
   test "summary captures key points" do
+    long_article = """
+    Climate change is affecting farming worldwide. Rising temperatures and
+    changing precipitation patterns are impacting crop yields and growing seasons...
+    """
+
     summary = MySummarizer.summarize(long_article)
 
     assert summary <~> "The article discusses climate change impacts on agriculture"
