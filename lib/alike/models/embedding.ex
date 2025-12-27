@@ -16,6 +16,40 @@ defmodule Alike.Models.Embedding do
 
   @default_model "sentence-transformers/all-MiniLM-L6-v2"
 
+  # Model-specific configurations for Bumblebee compatibility
+  # Only MiniLM variants are fully supported - other architectures have
+  # Bumblebee compatibility issues with TextEmbedding
+  @model_configs %{
+    "sentence-transformers/all-MiniLM-L6-v2" => %{
+      output_attribute: :hidden_state,
+      embedding_size: 384
+    },
+    "sentence-transformers/all-MiniLM-L12-v2" => %{
+      output_attribute: :hidden_state,
+      embedding_size: 384
+    },
+    "sentence-transformers/paraphrase-MiniLM-L6-v2" => %{
+      output_attribute: :hidden_state,
+      embedding_size: 384
+    },
+    "sentence-transformers/paraphrase-MiniLM-L12-v2" => %{
+      output_attribute: :hidden_state,
+      embedding_size: 384
+    }
+  }
+
+  @default_config %{output_attribute: :hidden_state, embedding_size: 384}
+
+  @doc false
+  def model_config(model \\ model_name()) do
+    Map.get(@model_configs, model, @default_config)
+  end
+
+  @doc """
+  Returns list of known compatible models.
+  """
+  def supported_models, do: Map.keys(@model_configs)
+
   @doc """
   Returns the configured embedding model name.
 
@@ -34,6 +68,8 @@ defmodule Alike.Models.Embedding do
   """
   def serving do
     model = model_name()
+    config = model_config(model)
+
     IO.puts("Loading embedding model #{model}...")
     {:ok, model_info} = Bumblebee.load_model({:hf, model})
     IO.puts("Model loaded successfully.")
@@ -48,7 +84,7 @@ defmodule Alike.Models.Embedding do
       compile: [batch_size: 2, sequence_length: 128],
       defn_options: [compiler: EXLA],
       output_pool: :mean_pooling,
-      output_attribute: :hidden_state
+      output_attribute: config.output_attribute
     )
   end
 
