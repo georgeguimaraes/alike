@@ -173,30 +173,16 @@ defmodule Alike.Similarity do
   end
 
   defp ensure_embedding_started do
-    model_name = Embedding.serving_name()
-
-    unless Process.whereis(model_name) do
-      spec = Embedding.child_spec()
-
-      case Supervisor.start_child(Alike.Supervisor, spec) do
-        {:ok, _pid} -> :ok
-        {:error, {:already_started, _}} -> :ok
-        {:error, _} -> :error
-      end
+    case Supervisor.start_child(Alike.Supervisor, Embedding.child_spec()) do
+      {:ok, _pid} -> :ok
+      {:error, {:already_started, _}} -> :ok
     end
   end
 
   defp ensure_nli_started do
-    model_name = NLI.serving_name()
-
-    unless Process.whereis(model_name) do
-      spec = NLI.child_spec()
-
-      case Supervisor.start_child(Alike.Supervisor, spec) do
-        {:ok, _pid} -> :ok
-        {:error, {:already_started, _}} -> :ok
-        {:error, _} -> :error
-      end
+    case Supervisor.start_child(Alike.Supervisor, NLI.child_spec()) do
+      {:ok, _pid} -> :ok
+      {:error, {:already_started, _}} -> :ok
     end
   end
 end
