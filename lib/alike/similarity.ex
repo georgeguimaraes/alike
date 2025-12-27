@@ -93,11 +93,7 @@ defmodule Alike.Similarity do
   defp check_for_contradiction(sentence1, sentence2, similarity) do
     case NLI.classify(sentence1, sentence2) do
       {:ok, %{label: "contradiction", score: score}} ->
-        if score > contradiction_threshold() do
-          false
-        else
-          true
-        end
+        score <= contradiction_threshold()
 
       {:ok, _} ->
         true
