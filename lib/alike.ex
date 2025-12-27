@@ -33,8 +33,8 @@ defmodule Alike do
   @doc """
   Determines if two sentences are semantically alike.
 
-  Uses sentence embeddings (all-MiniLM-L12-v2) for similarity detection and
-  NLI (nli-distilroberta-base) for contradiction detection.
+  Uses sentence embeddings (configurable, L6 by default) for similarity detection
+  and NLI (nli-distilroberta-base) for contradiction detection.
 
   ## Options
 
