@@ -26,6 +26,9 @@ defmodule Alike.Models.Embedding do
       Application.get_env(:alike, :embedding_model, @default_model)
   end
 
+  @doc false
+  def default_model, do: @default_model
+
   @doc """
   Returns the Nx.Serving for the embedding model.
   """
