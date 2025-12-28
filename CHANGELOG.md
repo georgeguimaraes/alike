@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/georgeguimaraes/alike/compare/v0.3.0...v0.4.0) (2025-12-28)
+
+
+### Features
+
+* Add Alike.start() and improve test performance ([0569732](https://github.com/georgeguimaraes/alike/commit/056973227d737f2a338e23ceb71c02ad76776b34))
+
 ## [0.3.0](https://github.com/georgeguimaraes/alike/compare/v0.2.0...v0.3.0) (2025-12-27)
 
 
