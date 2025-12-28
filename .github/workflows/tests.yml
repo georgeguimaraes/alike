@@ -22,12 +22,12 @@ jobs:
             otp: "27"
             model_name: "L6 (default)"
             model: "sentence-transformers/all-MiniLM-L6-v2"
-            exclude_tags: "--exclude l12_only"
+            test_flags: ""
           - elixir: "1.18"
             otp: "27"
             model_name: "L12 (quality)"
             model: "sentence-transformers/all-MiniLM-L12-v2"
-            exclude_tags: ""
+            test_flags: "--include l12_only"
 
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +50,6 @@ jobs:
       - name: Install dependencies
         run: mix deps.get
       - name: Run tests
-        run: mix test ${{ matrix.exclude_tags }}
+        run: mix test ${{ matrix.test_flags }}
         env:
           ALIKE_EMBEDDING_MODEL: ${{ matrix.model }}

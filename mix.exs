@@ -26,7 +26,7 @@ defmodule Alike.MixProject do
 
   defp docs do
     [
-      main: "readme",
+      main: "Alike",
       extras: [
         "README.md",
         "LICENSE",
@@ -61,7 +61,7 @@ defmodule Alike.MixProject do
     [
       {:nx, "~> 0.10.0"},
       {:bumblebee, "~> 0.6.3"},
-      # GPU acceleration
+      # GPU/CPU acceleration for model inference
       {:exla, "~> 0.10.0"},
       {:ex_doc, "~> 0.37", only: :dev, runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false}

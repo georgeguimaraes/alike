@@ -11,17 +11,19 @@ defmodule Alike.Models.NLI do
 
   @model "cross-encoder/nli-distilroberta-base"
 
+  require Logger
+
   @doc """
   Returns the Nx.Serving for the NLI model.
   """
   def serving do
-    IO.puts("Loading NLI model #{@model}...")
+    Logger.debug("Loading NLI model #{@model}...")
     {:ok, model_info} = Bumblebee.load_model({:hf, @model})
-    IO.puts("NLI model loaded successfully.")
+    Logger.debug("NLI model loaded successfully.")
 
-    IO.puts("Loading NLI tokenizer...")
+    Logger.debug("Loading NLI tokenizer...")
     {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, @model})
-    IO.puts("NLI tokenizer loaded successfully.")
+    Logger.debug("NLI tokenizer loaded successfully.")
 
     # Cross-encoder NLI uses text classification
     # Input format: sentence1 [SEP] sentence2

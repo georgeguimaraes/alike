@@ -53,18 +53,3 @@ defmodule Alike.WaveOperator do
     end
   end
 end
-
-# Backward compatibility alias
-defmodule WaveOperator do
-  @moduledoc """
-  Alias for `Alike.WaveOperator`.
-
-  Prefer using `import Alike.WaveOperator` in new code.
-  """
-
-  defmacro left <~> right do
-    quote do
-      Alike.alike?(unquote(left), unquote(right))
-    end
-  end
-end

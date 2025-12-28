@@ -25,7 +25,7 @@ Add `alike` to your test dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:alike, "~> 0.1.0", only: :test}
+    {:alike, "~> 0.3.0", only: :test}
   ]
 end
 ```
@@ -40,13 +40,18 @@ mix deps.get
 
 ### Setup test_helper.exs
 
-For faster inference, configure Nx to use the EXLA backend in your `test/test_helper.exs`:
+Configure Nx to use the EXLA backend in your `test/test_helper.exs`:
 
 ```elixir
 Nx.global_default_backend(EXLA.Backend)
 
+# Optional: Pre-load models at startup for faster tests
+Alike.start()
+
 ExUnit.start()
 ```
+
+The `start/0` call is optional but recommended. It loads models once at startup instead of on first use, avoiding a ~3-4 second delay on your first test.
 
 ## Quick Start
 

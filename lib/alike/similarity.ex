@@ -150,8 +150,9 @@ defmodule Alike.Similarity do
         {:ok, similarity}
 
       {:ok, %{embedding: embeddings}} ->
-        e1 = Nx.slice(embeddings, [0, 0], [1, 384])
-        e2 = Nx.slice(embeddings, [1, 0], [1, 384])
+        %{embedding_size: size} = Embedding.model_config()
+        e1 = Nx.slice(embeddings, [0, 0], [1, size])
+        e2 = Nx.slice(embeddings, [1, 0], [1, size])
         similarity = Embedding.cosine_similarity(e1, e2)
         {:ok, similarity}
 
@@ -168,17 +169,41 @@ defmodule Alike.Similarity do
     Embedding.embed([text], opts)
   end
 
+  @doc """
+  Pre-loads both embedding and NLI models.
+
+  Call this once at test suite startup to avoid repeated model loading.
+  See `Alike.warm_up/0` for usage details.
+  """
+  def warm_up do
+    ensure_embedding_started()
+    ensure_nli_started()
+    :ok
+  end
+
   defp ensure_embedding_started do
-    case Supervisor.start_child(Alike.Supervisor, Embedding.child_spec()) do
-      {:ok, _pid} -> :ok
-      {:error, {:already_started, _}} -> :ok
+    name = Embedding.serving_name()
+
+    if Process.whereis(name) do
+      :ok
+    else
+      case Supervisor.start_child(Alike.Supervisor, Embedding.child_spec()) do
+        {:ok, _pid} -> :ok
+        {:error, {:already_started, _}} -> :ok
+      end
     end
   end
 
   defp ensure_nli_started do
-    case Supervisor.start_child(Alike.Supervisor, NLI.child_spec()) do
-      {:ok, _pid} -> :ok
-      {:error, {:already_started, _}} -> :ok
+    name = NLI.serving_name()
+
+    if Process.whereis(name) do
+      :ok
+    else
+      case Supervisor.start_child(Alike.Supervisor, NLI.child_spec()) do
+        {:ok, _pid} -> :ok
+        {:error, {:already_started, _}} -> :ok
+      end
     end
   end
 end

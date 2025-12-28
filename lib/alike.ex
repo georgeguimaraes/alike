@@ -71,4 +71,21 @@ defmodule Alike do
   Delegates to `Alike.Similarity.classify/3`.
   """
   defdelegate classify(sentence1, sentence2, opts \\ []), to: Alike.Similarity
+
+  @doc """
+  Pre-loads the ML models to avoid cold-start latency.
+
+  This is optional but recommended. Without it, models load lazily on first use,
+  which means your first test will be slower (~3-4 seconds).
+
+  Call this in your `test/test_helper.exs` to load models once at startup:
+
+      # test/test_helper.exs
+      Nx.global_default_backend(EXLA.Backend)
+      Alike.start()
+      ExUnit.start()
+
+  Returns `:ok` when both models are loaded and ready.
+  """
+  def start, do: Alike.Similarity.warm_up()
 end

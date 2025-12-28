@@ -14,6 +14,8 @@ defmodule Alike.Models.Embedding do
 
   alias Bumblebee.Text.TextEmbedding
 
+  require Logger
+
   @default_model "sentence-transformers/all-MiniLM-L6-v2"
 
   # Model-specific configurations for Bumblebee compatibility
@@ -70,13 +72,13 @@ defmodule Alike.Models.Embedding do
     model = model_name()
     config = model_config(model)
 
-    IO.puts("Loading embedding model #{model}...")
+    Logger.debug("Loading embedding model #{model}...")
     {:ok, model_info} = Bumblebee.load_model({:hf, model})
-    IO.puts("Model loaded successfully.")
+    Logger.debug("Embedding model loaded successfully.")
 
-    IO.puts("Loading tokenizer...")
+    Logger.debug("Loading tokenizer...")
     {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, model})
-    IO.puts("Tokenizer loaded successfully.")
+    Logger.debug("Tokenizer loaded successfully.")
 
     TextEmbedding.text_embedding(
       model_info,
