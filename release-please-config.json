@@ -6,6 +6,7 @@
   "packages": {
     ".": {
       "release-type": "elixir",
+      "always-bump-patch": true,
       "changelog-sections": [
         {"type": "feat", "section": "Features", "hidden": false},
         {"type": "fix", "section": "Bug Fixes", "hidden": false},
