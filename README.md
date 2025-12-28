@@ -242,7 +242,7 @@ Cache the Bumblebee models directory to avoid re-downloading on every CI run:
 
 ## License
 
-Copyright 2025 George Guimarães
+Copyright (c) 2025 George Guimaraes
 
-Apache License 2.0 - see [LICENSE](LICENSE) for details.
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
 
