@@ -3,10 +3,10 @@
   "pull-request-title-pattern": "chore: release ${version}",
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
+  "always-bump-patch": true,
   "packages": {
     ".": {
       "release-type": "elixir",
-      "always-bump-patch": true,
       "changelog-sections": [
         {"type": "feat", "section": "Features", "hidden": false},
         {"type": "fix", "section": "Bug Fixes", "hidden": false},
