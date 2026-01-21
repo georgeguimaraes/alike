@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.4.1](https://github.com/georgeguimaraes/alike/compare/v0.4.0...v0.4.1) (2026-01-21)
+
+
+### Bug Fixes
+
+* mark release PR as tagged after successful release ([1f7a02f](https://github.com/georgeguimaraes/alike/commit/1f7a02fe3ceb98a36acb0f8ee20b96d0966271c5))
+
+
+### Miscellaneous
+
+* add Dependabot with daily updates ([8e433c2](https://github.com/georgeguimaraes/alike/commit/8e433c25ef2cdf3057883d86494751fc910e8c3c))
+* **deps-dev:** bump credo from 1.7.14 to 1.7.15 ([#10](https://github.com/georgeguimaraes/alike/issues/10)) ([1226478](https://github.com/georgeguimaraes/alike/commit/12264786f50278858534078a99838ada728c3f9a))
+* **deps-dev:** bump ex_doc from 0.39.3 to 0.40.0 ([#12](https://github.com/georgeguimaraes/alike/issues/12)) ([edfc5e2](https://github.com/georgeguimaraes/alike/commit/edfc5e21ac715b761aa8a0d6103dcbe049d27f5c))
+* **deps:** bump actions/cache from 3 to 5 ([#7](https://github.com/georgeguimaraes/alike/issues/7)) ([8543e33](https://github.com/georgeguimaraes/alike/commit/8543e33ee1a774f51b018c5b535abf10198f1b30))
+* **deps:** bump actions/checkout from 4 to 6 ([#8](https://github.com/georgeguimaraes/alike/issues/8)) ([3a0fd3b](https://github.com/georgeguimaraes/alike/commit/3a0fd3b10e61c4c66448f5ef8fbc8cef2b82fd04))
+* **deps:** bump amannn/action-semantic-pull-request from 5 to 6 ([#9](https://github.com/georgeguimaraes/alike/issues/9)) ([55ad2ce](https://github.com/georgeguimaraes/alike/commit/55ad2ce5d511424b64e0bedffd7da1ed6d97ab00))
+
+
+### Code Refactoring
+
+* **ci:** use release-please for GitHub releases ([7c38392](https://github.com/georgeguimaraes/alike/commit/7c383924e97b526ddad294fa7f179d7eece04642))
+
+
+### Continuous Integration
+
+* Separate release workflow to run tests before publishing ([e581928](https://github.com/georgeguimaraes/alike/commit/e5819286217a7041e0734617e70617e5a4608f66))
+* use shared workflows from georgeguimaraes/workflows ([21c6a39](https://github.com/georgeguimaraes/alike/commit/21c6a390e33d0551d751b5edbdcad61aca7ae103))
+
 ## [0.4.0](https://github.com/georgeguimaraes/alike/compare/v0.3.0...v0.4.0) (2025-12-28)
 
 
