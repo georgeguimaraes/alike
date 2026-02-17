@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.2](https://github.com/georgeguimaraes/alike/compare/v0.4.1...v0.4.2) (2026-02-17)
+
+
+### Bug Fixes
+
+* **ci:** chain hex-publish in release-please workflow ([39672de](https://github.com/georgeguimaraes/alike/commit/39672de7c543eb7c4ee1d9d52ba2cb8c33deae39))
+
+
+### Miscellaneous
+
+* **deps-dev:** bump credo from 1.7.15 to 1.7.16 ([#14](https://github.com/georgeguimaraes/alike/issues/14)) ([e01ecaa](https://github.com/georgeguimaraes/alike/commit/e01ecaa005dca795b44bee8dc9d70fe48a7b4d1c))
+* **deps-dev:** bump ex_doc from 0.40.0 to 0.40.1 ([#15](https://github.com/georgeguimaraes/alike/issues/15)) ([cef467d](https://github.com/georgeguimaraes/alike/commit/cef467ddf6e711327ff47389aea7507752f16bd5))
+* remove unused on-release workflow ([7bdd4f3](https://github.com/georgeguimaraes/alike/commit/7bdd4f381695df1127e3d7ac3e114c95ee066fa4))
+
 ## [0.4.1](https://github.com/georgeguimaraes/alike/compare/v0.4.0...v0.4.1) (2026-01-21)
 
 
