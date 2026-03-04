@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/georgeguimaraes/alike/compare/v0.4.2...v0.4.3) (2026-03-04)
+
+
+### Miscellaneous
+
+* **deps-dev:** bump credo from 1.7.16 to 1.7.17 ([#16](https://github.com/georgeguimaraes/alike/issues/16)) ([3f29ce2](https://github.com/georgeguimaraes/alike/commit/3f29ce29fa5a64fb29c407ee0296ad8f460e4b21))
+
 ## [0.4.2](https://github.com/georgeguimaraes/alike/compare/v0.4.1...v0.4.2) (2026-02-17)
 
 
