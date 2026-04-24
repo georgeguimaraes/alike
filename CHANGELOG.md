@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/georgeguimaraes/alike/compare/v0.4.3...v0.4.4) (2026-04-24)
+
+
+### Miscellaneous
+
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([#19](https://github.com/georgeguimaraes/alike/issues/19)) ([593aa1d](https://github.com/georgeguimaraes/alike/commit/593aa1d448602a163141ce7627cca29b4ccb15df))
+
 ## [0.4.3](https://github.com/georgeguimaraes/alike/compare/v0.4.2...v0.4.3) (2026-03-04)
 
 
