@@ -30,7 +30,7 @@ jobs:
             test_flags: "--include l12_only"
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
