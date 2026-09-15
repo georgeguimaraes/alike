@@ -13,43 +13,43 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: ${{matrix.model_name}}
+    name: ${{ matrix.model.name }} / OTP ${{ matrix.beam.otp }} / Elixir ${{ matrix.beam.elixir }}
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - elixir: "1.18"
-            otp: "27"
-            model_name: "L6 (default)"
-            model: "sentence-transformers/all-MiniLM-L6-v2"
+        beam:
+          - { elixir: "1.20", otp: "29" }
+          - { elixir: "1.19", otp: "28" }
+          - { elixir: "1.18", otp: "27" }
+        model:
+          - name: "L6 (default)"
+            id: "sentence-transformers/all-MiniLM-L6-v2"
             test_flags: ""
-          - elixir: "1.18"
-            otp: "27"
-            model_name: "L12 (quality)"
-            model: "sentence-transformers/all-MiniLM-L12-v2"
+          - name: "L12 (quality)"
+            id: "sentence-transformers/all-MiniLM-L12-v2"
             test_flags: "--include l12_only"
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          otp-version: ${{matrix.otp}}
-          elixir-version: ${{matrix.elixir}}
+          otp-version: ${{ matrix.beam.otp }}
+          elixir-version: ${{ matrix.beam.elixir }}
       - name: Restore dependencies cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+          key: ${{ runner.os }}-mix-${{ matrix.beam.otp }}-${{ matrix.beam.elixir }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-${{ matrix.beam.otp }}-${{ matrix.beam.elixir }}-
       - name: Cache Bumblebee models
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/bumblebee
-          key: ${{ runner.os }}-bumblebee-${{ matrix.model }}-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-bumblebee-${{ matrix.model.id }}-${{ hashFiles('**/mix.lock') }}
       - name: Install dependencies
         run: mix deps.get
       - name: Run tests
-        run: mix test ${{ matrix.test_flags }}
+        run: mix test ${{ matrix.model.test_flags }}
         env:
-          ALIKE_EMBEDDING_MODEL: ${{ matrix.model }}
+          ALIKE_EMBEDDING_MODEL: ${{ matrix.model.id }}

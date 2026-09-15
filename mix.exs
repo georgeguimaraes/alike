@@ -59,10 +59,10 @@ defmodule Alike.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:nx, "~> 0.10.0"},
-      {:bumblebee, "~> 0.6.3"},
+      {:nx, "~> 0.10 or ~> 1.0"},
+      {:bumblebee, "~> 0.6.3 or ~> 0.7"},
       # GPU/CPU acceleration for model inference
-      {:exla, "~> 0.10.0"},
+      {:exla, "~> 0.10 or ~> 1.0"},
       {:ex_doc, "~> 0.37", only: :dev, runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
