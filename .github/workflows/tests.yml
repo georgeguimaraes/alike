@@ -40,8 +40,8 @@ jobs:
         uses: actions/cache@v6
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+          key: ${{ runner.os }}-mix-${{ matrix.beam.otp }}-${{ matrix.beam.elixir }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-${{ matrix.beam.otp }}-${{ matrix.beam.elixir }}-
       - name: Cache Bumblebee models
         uses: actions/cache@v6
         with:
