@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.4](https://github.com/georgeguimaraes/alike/compare/v0.4.3...v0.4.4) (2026-09-15)
+
+
+### Miscellaneous
+
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([#19](https://github.com/georgeguimaraes/alike/issues/19)) ([593aa1d](https://github.com/georgeguimaraes/alike/commit/593aa1d448602a163141ce7627cca29b4ccb15df))
+* **deps:** Move to nx 0.13, bumblebee 0.7 and test on Elixir 1.20 / OTP 29 ([#26](https://github.com/georgeguimaraes/alike/issues/26)) ([51c2bdf](https://github.com/georgeguimaraes/alike/commit/51c2bdf4986114dc579a9d271d5e1be368ace6c4))
+
 ## [0.4.3](https://github.com/georgeguimaraes/alike/compare/v0.4.2...v0.4.3) (2026-03-04)
 
 
