@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.5](https://github.com/georgeguimaraes/alike/compare/v0.4.4...v0.4.5) (2026-09-16)
+
+
+### Documentation
+
+* Point the install snippet at the current release ([67a7b07](https://github.com/georgeguimaraes/alike/commit/67a7b070b93413376b4166523d00d827a542fbf8))
+
 ## [0.4.4](https://github.com/georgeguimaraes/alike/compare/v0.4.3...v0.4.4) (2026-09-15)
 
 
