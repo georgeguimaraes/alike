@@ -25,7 +25,7 @@ Add `alike` to your test dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:alike, "~> 0.3.0", only: :test}
+    {:alike, "~> 0.4", only: :test}
   ]
 end
 ```
