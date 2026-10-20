@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.5](https://github.com/georgeguimaraes/alike/compare/v0.4.4...v0.4.5) (2026-10-20)
+
+
+### Miscellaneous
+
+* **ci:** Pin georgeguimaraes/workflows to v1.0.1 ([8b4cbfa](https://github.com/georgeguimaraes/alike/commit/8b4cbfa073d4c9af1f6c1e8e1b49ec6fe7ff96b8))
+* **ci:** Pin GitHub Actions to commit SHAs ([04c794f](https://github.com/georgeguimaraes/alike/commit/04c794f2a81ed6ce64cbf9d95eef8728701d4ddc))
+
+
+### Documentation
+
+* Point the install snippet at the current release ([67a7b07](https://github.com/georgeguimaraes/alike/commit/67a7b070b93413376b4166523d00d827a542fbf8))
+
 ## [0.4.4](https://github.com/georgeguimaraes/alike/compare/v0.4.3...v0.4.4) (2026-09-15)
 
 
